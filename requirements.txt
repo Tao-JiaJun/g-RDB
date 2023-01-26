@@ -1,0 +1,9 @@
+jpeg4py==0.1.4
+matplotlib==3.4.2
+numpy==1.21.2
+opencv_python==4.5.2.52
+pycocotools==2.0.6
+thop==0.0.5.post2203101510
+torch==1.8.1+cu102
+torchvision==0.9.1+cu102
+tqdm==4.61.1

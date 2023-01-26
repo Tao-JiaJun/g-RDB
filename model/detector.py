@@ -55,14 +55,16 @@ class Detector(nn.Module):
   
     def forward(self, x, gt_list=None):
         # backbone
+        tic = time.time()
         features = self.backbone(x)
         features = self.neck(features)
         features = self.head(features)
+        toc = time.time() - tic
         if self.training:
             gt_tensor = torch.from_numpy(self.gt_maker(gt_list=gt_list)).float().to(self.device)
             return self.loss(features, gt_tensor, num_cls=self.num_cls)
         else:
-            return self.evaluating(features)
+            return toc, self.evaluating(features)
     
     def evaluating(self, pred_head):
         """

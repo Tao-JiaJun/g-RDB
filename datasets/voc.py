@@ -266,6 +266,8 @@ class VOCDataset(data.Dataset):
     def load_img_targets(self, img_id):
         target = self.json_data[img_id[1]]
         img = jpeg.JPEG(self._imgpath % img_id).decode()
+        #img = cv2.imread(self._imgpath % img_id)
+        #img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
         height, width, _ = img.shape
         if self.target_transform is not None:
             target = self.target_transform(target, width, height)

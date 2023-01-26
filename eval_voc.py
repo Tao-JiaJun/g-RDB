@@ -168,14 +168,17 @@ def eval_model(model, device, dataloader, num_images):
     # gt_counter_per_class = np.load('./eval/gt_counter.npy', allow_pickle=True).item()
     detec_result = [[] for _ in range(len(VOC_CLASSES)) ]
     counter_images_per_class = {}
+    gpu_time = 0
     detec_time = 0
     print("===> Detecting")
     # with tqdm(total=len(dataloader)) as pbar:
     for i, (img_info, img, targets) in enumerate(dataloader):
         img = img.to(device)
         tic = time.time()
-        bbox_list, score_list, cls_list = model(img)
+        gpu_t, all_list = model(img)
+        bbox_list, score_list, cls_list = all_list[:]
         detec_time += time.time() - tic
+        gpu_time += gpu_t
         for j, (info, gts, bboxes, scores, cls_indexes) in enumerate(zip(img_info, targets, bbox_list, score_list, cls_list)):
             # get image info
             file_path = info[0]
@@ -218,6 +221,7 @@ def eval_model(model, device, dataloader, num_images):
     print("===> Calculate")
     mAP = calculate_ap(ground_truth, detec_result, gt_counter_per_class)
     FPS = num_images / detec_time
+    print("gpu_time=",gpu_time)
     return mAP, FPS, detec_time
 
 
